@@ -16,6 +16,7 @@ class RemoteConfigValues {
     private let remoteConfig = RemoteConfig.remoteConfig()
 
     let defaultMsg = "Copyright \(Calendar.current.component(.year, from: Date()).description) - FIAP"
+    
     var copyrightMessage: String {
         remoteConfig.configValue(forKey: "copyrightMessage").stringValue ?? defaultMsg
     }
@@ -34,7 +35,7 @@ class RemoteConfigValues {
     
     
     func fetch() {
-        remoteConfig.fetch { status, error in
+        remoteConfig.fetch(withExpirationDuration: 1.0) { status, error in
             if let error = error {
                 print("Erro ao fazer fetch", error.localizedDescription)
             } else {
