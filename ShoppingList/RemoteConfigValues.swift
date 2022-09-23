@@ -8,6 +8,7 @@
 
 import Foundation
 import Firebase
+import GameController
 
 
 class RemoteConfigValues {
@@ -33,18 +34,24 @@ class RemoteConfigValues {
     
     
     func fetch() {
-        remoteConfig.fetchAndActivate { status, error in
+        remoteConfig.fetch { status, error in
             if let error = error {
                 print("Erro ao fazer fetch", error.localizedDescription)
             } else {
                 switch status {
-                case .error:
+                case .failure:
                     print("Erro no fetch")
-                case .successFetchedFromRemote:
-                    print("Atualizou a partir da nuvem")
-                case .successUsingPreFetchedData:
-                    print("Atualizou com os dados em cache")
+                case .noFetchYet:
+                    print("Não fez o fetch")
+                case .throttled:
+                    print("Ainda não deu 12 minutos")
+                case .success:
+                    print("Agora deve ir")
+                    self.remoteConfig.activate()
+                default:
+                    print("Status desconhecido")
                 }
+                
             }
         }
     }
